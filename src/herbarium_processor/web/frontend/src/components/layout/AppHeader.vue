@@ -1,5 +1,5 @@
 <template>
-  <AppBar>
+  <AppBar badge-text="1.0.0">
     <template #right>
       <ul class="menu menu-horizontal px-1">
         <li>
