@@ -3,14 +3,11 @@
 
 **Herbarium Specimen Digitization Platform**
 
-Parsely Core + Studio help herbaria, museums, and researchers digitize large volumes of specimen labels with the latest AI models in a clean, intuitive workflow. 
+Parsely Studio helps herbaria, museums, and researchers digitize large volumes of specimen labels with the latest AI models in a clean, intuitive workflow. 
 
 🔗 **Parsely Studio version 1.0.0: [parselystudio.com](https://parselystudio.com)**
 
 > For local use, see the [Getting Started](#-getting-started) section below.
->Parsely Core is the name of the underlying code and Parsely Studio is the name of the web application.
-
-> Protocol for reporting the use of Parsely Studio in specimen digitization: "Parsely Studio (version 1.0.0) and its underlying technology (Google Gemini Pro 2.5 and Google Cloud Vision) was used to transcribe this specimen."
 
 
 ## ✨ What it does
@@ -85,6 +82,10 @@ poetry run pre-commit install
 
 1. Open [`notebooks/herbarium_processor.ipynb`](notebooks/herbarium_processor.ipynb).
 2. Point it to a directory of images (`img/bucket`).
+
+## Protocol for reporting the use of Parsely Studio
+
+"Parsely Studio (version 1.0.0) and its underlying technology (Google Gemini Pro 2.5 and Google Cloud Vision) was used to transcribe this specimen."
 
 ## 📜 License
 
