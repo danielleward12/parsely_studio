@@ -5,7 +5,7 @@
 
 Parsely Core + Studio help herbaria, museums, and researchers digitize large volumes of specimen labels with the latest AI models in a clean, intuitive workflow.
 
-🔗 **Live demo (pre-alpha): [parselystudio.com](https://parselystudio.com)**
+🔗 **Parsely version 1.0.0: [parselystudio.com](https://parselystudio.com)**
 
 > ⚠️ This demo is a **pre-alpha release**. Features are incomplete and downtime is expected.
 > For stable local use, see the [Getting Started](#-getting-started) section below.
