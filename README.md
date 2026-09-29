@@ -10,7 +10,8 @@ Parsely Core + Studio help herbaria, museums, and researchers digitize large vol
 > For local use, see the [Getting Started](#-getting-started) section below.
 >
 > Protocol for reporting the use of Parsely Studio in specimen digitization: "Parsely Studio (version 1.0.0) and its underlying technology (Google Gemini Pro 2.5 and Google Cloud Vision) was used to transcribe this specimen."
->  <img width="468" height="48" alt="image" src="https://github.com/user-attachments/assets/87376d6b-4874-450a-8672-aef40ed1b976" />
+
+<img width="468" height="48" alt="image" src="https://github.com/user-attachments/assets/87376d6b-4874-450a-8672-aef40ed1b976" />
 
 
 ## ✨ What it does
