@@ -1,0 +1,32 @@
+csv_path: data/cs_canonical.csv
+field_list:
+  - catalogNumber 
+  - datasetName
+  - scientificName
+  - locality
+  - municipality
+  - county
+  - stateProvince
+  - country
+  - verbatimLatitude
+  - verbatimLongitude
+  - verbatimElevation
+  - habitat
+  - verbatimEventDate
+  - eventDate
+  - recordedBy
+  - recordNumber
+  - identifiedBy
+  - dateIdentified
+  - otherCatalogNumbers
+  - associatedTaxa
+  - comment
+
+shot_data:
+  - id: UC46732_2
+    img_path: prompts/few_shot_data/UC46732_2.JPG
+  - id: UC1207518_2
+    img_path: prompts/few_shot_data/UC1207518_2.JPG
+  - id: UC1318628_2
+    img_path: prompts/few_shot_data/UC1318628_2.JPG
+template_path: prompts/templates/herbarium_prompt.j2

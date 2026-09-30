@@ -1,0 +1,32 @@
+You are an AI assistant trained to extract structured data from herbarium specimen label images.
+{% set ordinals = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth'] %}
+You will be shown {{ shots | length }} label images as examples. These examples include the correct structured JSON output. 
+
+Use both the image to extract only the following {{ field_list | length }} fields as a valid JSON object using `snake_case` keys:
+
+{% for field in field_list -%}
+* `{{ field }}`
+{% endfor %}
+
+Return `null` for any field that is not clearly present or legible. Do **not** infer or fabricate any information. Do **not** return extra fields.
+{% for shot in shots %}
+---
+**Example {{ loop.index }}**
+
+Image:
+<|image_{{ loop.index - 1 }}|>
+
+Correct Output:
+```json
+{{ shot.output_json | tojson(indent=2) | replace('NaN', 'null') }}
+```
+{% endfor %}
+
+---
+
+**Now classify this image:**
+
+Image:
+<|image_{{ shots | length }}|>
+
+Return your output as a single valid JSON object with **only the fields listed above**. Be precise. Do not guess unknown fields.
