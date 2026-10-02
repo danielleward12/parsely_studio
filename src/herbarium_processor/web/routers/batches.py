@@ -55,6 +55,30 @@ class ImageInfo(BaseModel):
 router = APIRouter(prefix="/batches", tags=["batches"])
 BASE_UPLOAD_LIMIT = 10
 API_KEY_UPLOAD_LIMIT = 50
+CSV_FIELD_ORDER = [
+    "id",
+    "catalogNumber",
+    "datasetName",
+    "scientificName",
+    "locality",
+    "municipality",
+    "county",
+    "stateProvince",
+    "country",
+    "verbatimLatitude",
+    "verbatimLongitude",
+    "verbatimElevation",
+    "habitat",
+    "verbatimEventDate",
+    "eventDate",
+    "recordedBy",
+    "recordNumber",
+    "identifiedBy",
+    "dateIdentified",
+    "otherCatalogNumbers",
+    "associatedTaxa",
+    "comment",
+]
 
 
 @router.post("", status_code=201)
@@ -305,7 +329,7 @@ async def get_csv(batch_id: str):
     if not rows:
         raise HTTPException(status_code=404, detail="No label data found")
 
-    field_list = sorted(fieldnames)
+    field_list = CSV_FIELD_ORDER + sorted(fieldnames.difference(CSV_FIELD_ORDER))
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
     num_specimens = len(rows)
     filename = f"parsely_export_{num_specimens}_{timestamp}.csv"
