@@ -64,9 +64,12 @@
         />
         {{
           isUploading
-            ? "Uploading…"
+            ? "Saving & extracting…"
             : currentIndex < specimens.length - 1 ? "Save & next" : "Save & move to validation" }}
       </button>
+      <p v-if="saveError" class="ml-3 max-w-sm text-sm text-error" role="alert">
+        {{ saveError }}
+      </p>
     </template>
   </WizardLayout>
 </template>
@@ -92,6 +95,7 @@ const router = useRouter();
 const specimens = ref([]);
 const loading = ref(true);
 const error = ref(null);
+const saveError = ref(null);
 const cropperRefs = ref([]);
 const isUploading = ref(false);
 const currentIndex = ref(0);
@@ -143,6 +147,7 @@ function setCropperRef(el) {
 async function handleUpload() {
   if (!hasSpecimens.value) return;
   isUploading.value = true;
+  saveError.value = null;
 
   try {
     const specimen = specimens.value[currentIndex.value];
@@ -156,12 +161,11 @@ async function handleUpload() {
     const cropOp = await cropperRef.getCropOperation();
     if (!cropOp) throw new Error("No crop operation");
 
-    // Fire-and-forget via Pinia store; it will merge result into state
-    batchStore
-      .cropAndInfer(props.id, specimen.id, cropOp)
-      .catch((e) => console.error("crop_and_infer error", e));
+    // Wait for the crop and inference response before advancing. The next
+    // screen derives its stage from post_crop_url and llm_output in the store.
+    await batchStore.cropAndInfer(props.id, specimen.id, cropOp);
 
-    // Immediately advance UI without waiting for POST
+    // Advance only after the server has completed the crop and inference.
     if (currentIndex.value < specimens.value.length - 1) {
       currentIndex.value++;
     } else {
@@ -169,9 +173,9 @@ async function handleUpload() {
       router.push({ name: "labelWizard", params: { id: props.id } });
     }
   } catch (err) {
-    error.value = err?.message || "Unknown error";
+    console.error("crop_and_infer error", err);
+    saveError.value = err?.message || "Could not save this crop. Please try again.";
   } finally {
-    // Re-enable the button right away for next interaction
     isUploading.value = false;
   }
 }
