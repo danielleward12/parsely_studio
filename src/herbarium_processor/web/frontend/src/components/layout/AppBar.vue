@@ -42,7 +42,7 @@ import blob from "@/assets/blob.svg";
 const props = defineProps({
   brandHref: { type: String, default: "/" },
   showBadge: { type: Boolean, default: true },
-  badgeText: { type: String, default: "Pre-alpha" },
+  badgeText: { type: String, default: "1.0.0" },
   sticky: { type: Boolean, default: false },
   progressPercent: { type: Number, default: null },
 });
