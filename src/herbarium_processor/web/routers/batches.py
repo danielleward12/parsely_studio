@@ -323,7 +323,9 @@ async def get_csv(batch_id: str):
                     data = json.load(f)
                 # Older saved labels used "id" or "filename" for the image name.
                 if "imagename" not in data:
-                    data["imagename"] = data.get("filename", data.get("id", subdir.name))
+                    data["imagename"] = data.get(
+                        "filename", data.get("id", subdir.name)
+                    )
                 data.pop("filename", None)
                 data.pop("id", None)
                 rows.append(data)

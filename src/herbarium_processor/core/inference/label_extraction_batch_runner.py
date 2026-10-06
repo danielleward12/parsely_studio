@@ -95,7 +95,9 @@ class LabelExtractionBatchRunner:
                 await self._acquire_rpm_token()
                 # LabelExtractor.classify is async now
                 res = await extractor.classify(target)
-                res["imagename"] = os.path.splitext(os.path.basename(target.img_path))[0]
+                res["imagename"] = os.path.splitext(os.path.basename(target.img_path))[
+                    0
+                ]
                 return res
 
         if not self.targets:
