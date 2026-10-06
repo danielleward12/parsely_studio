@@ -41,6 +41,7 @@ export const useBatchStore = defineStore("batches", {
     // Acts as an in-memory cache: { [id]: Batch }
     /** @type {Record<string, Batch>} */
     batches: {},
+    processingErrors: {},
   }),
   actions: {
     // Convenience: get specimens array for a batch (always an array)
@@ -159,9 +160,16 @@ export const useBatchStore = defineStore("batches", {
      */
     async cropAndInfer(batchId, imageId, cropOp) {
       const url = `/api/batches/${batchId}/crop_and_infer/${imageId}`;
+      const processingKey = `${batchId}:${imageId}`;
 
       // Set waiting flag true at start
-      this._mergeSpecimenRecord(batchId, imageId, { waiting_on_llm: true });
+      this._mergeSpecimenRecord(batchId, imageId, {
+        waiting_on_llm: true,
+        image_info: {
+          post_crop_url: `/tmp/batch_${batchId}/images/${imageId}/post_crop.jpg`,
+        },
+      });
+      delete this.processingErrors[processingKey];
 
       let updated = null;
       try {
@@ -170,7 +178,16 @@ export const useBatchStore = defineStore("batches", {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(cropOp),
         });
-        if (!res.ok) throw new Error(`Crop/infer failed: ${res.status}`);
+        if (!res.ok) {
+          let message = `Crop/infer failed: ${res.status}`;
+          try {
+            const errorBody = await res.json();
+            message = errorBody?.detail || message;
+          } catch {
+            // Keep the status-based message when the response isn't JSON.
+          }
+          throw new Error(message);
+        }
 
         // Backend may return JSON object with updated fields; guard empty body
         try {
@@ -183,6 +200,14 @@ export const useBatchStore = defineStore("batches", {
         this._mergeSpecimenRecord(batchId, imageId, {
           image_info: updated || {},
         });
+        if (!updated?.llm_output) {
+          this.processingErrors[processingKey] =
+            "Processing finished without parsed fields. Please try again.";
+        }
+      } catch (err) {
+        this.processingErrors[processingKey] =
+          err?.message || "Image processing failed. Please try again.";
+        throw err;
       } finally {
         // Clear waiting flag regardless of success/failure
         this._mergeSpecimenRecord(batchId, imageId, { waiting_on_llm: false });

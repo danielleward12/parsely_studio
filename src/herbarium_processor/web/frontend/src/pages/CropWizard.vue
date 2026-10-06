@@ -161,15 +161,14 @@ async function handleUpload() {
     const cropOp = await cropperRef.getCropOperation();
     if (!cropOp) throw new Error("No crop operation");
 
-    // Wait for the crop and inference response before advancing. The next
-    // screen derives its stage from post_crop_url and llm_output in the store.
-    await batchStore.cropAndInfer(props.id, specimen.id, cropOp);
-
-    // Advance only after the server has completed the crop and inference.
+    const inference = batchStore.cropAndInfer(props.id, specimen.id, cropOp);
     if (currentIndex.value < specimens.value.length - 1) {
+      // Keep earlier crop steps sequential, then let the final inference finish
+      // while the review page is already open.
+      await inference;
       currentIndex.value++;
     } else {
-      console.log("Done cropping; go to labeling");
+      inference.catch((err) => console.error("crop_and_infer error", err));
       router.push({ name: "labelWizard", params: { id: props.id } });
     }
   } catch (err) {

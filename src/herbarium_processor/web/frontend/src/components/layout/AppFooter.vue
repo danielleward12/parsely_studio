@@ -11,7 +11,7 @@
         <!-- GitHub link -->
         <div class="mt-4">
           <a
-            href="https://github.com/lisunshiny/herbarium-processor"
+            href="https://github.com/danielleward12/parsely_studio"
             target="_blank"
             rel="noopener noreferrer"
             class="inline-flex items-center gap-2 text-sm text-emerald-400 hover:text-emerald-300"

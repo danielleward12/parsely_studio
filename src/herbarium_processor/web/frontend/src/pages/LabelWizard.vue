@@ -26,11 +26,24 @@
       >
         <div v-if="!currentSpecimen?.image_info?.llm_output">
           <div class="flex h-full items-center justify-center">
-            <div class="flex flex-col items-center space-y-3 pt-24">
-              <span class="loading loading-spinner loading-lg" />
-              <p class="text-sm text-base-content/60">
-                Parsely is assigning label text to fields. This may take up to a minute...
-              </p>
+            <div class="flex max-w-xl flex-col items-center space-y-3 px-6 pt-24 text-center">
+              <template v-if="processingError">
+                <p class="text-sm text-error" role="alert">
+                  Image processing failed: {{ processingError }}
+                </p>
+                <button
+                  class="btn btn-sm btn-outline"
+                  @click="router.push({ name: 'home' })"
+                >
+                  Back to upload
+                </button>
+              </template>
+              <template v-else>
+                <span class="loading loading-spinner loading-lg" />
+                <p class="text-sm text-base-content/60">
+                  Parsely is assigning label text to fields...
+                </p>
+              </template>
             </div>
           </div>
         </div>
@@ -120,6 +133,12 @@ const hasSpecimens = computed(() => specimens.value.length > 0);
 const currentSpecimen = computed(() =>
   hasSpecimens.value ? specimens.value[currentIndex.value] : null
 );
+const processingError = computed(() => {
+  const imageId = currentSpecimen.value?.image_info?.id;
+  return imageId
+    ? batchStore.processingErrors[`${props.id}:${imageId}`]
+    : null;
+});
 const form = reactive({
   ...(currentSpecimen.value?.image_info?.llm_output || {}),
 });

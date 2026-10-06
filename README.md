@@ -5,7 +5,7 @@
 
 Parsely Studio helps herbaria, museums, and researchers digitize large volumes of specimen labels with the latest AI models in a clean, intuitive workflow. 
 
-🔗 **Parsely Studio version 1.0.0: [parselystudio.com](https://parselystudio.com)**
+🔗 **Parsely Studio version 1.0.0: [parselydigitization.com](https://parselydigitization.com)**
 
 > For local use, see the [Getting Started](#-getting-started) section below.
 

@@ -5,9 +5,9 @@
 SHELL := /bin/bash
 
 # ---- Config ----
-PROJECT_ID ?= herbarium-processor
+PROJECT_ID ?= parsely-studio
 REGION ?= us-west1
-SERVICE ?= herbarium-processor
+SERVICE ?= parsely-studio
 REPO ?= app
 TAG ?= $(shell date +%Y%m%d-%H%M%S)
 IMAGE := $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPO)/$(SERVICE):$(TAG)
@@ -50,7 +50,8 @@ gcp-build: ## Build & push image via Cloud Build
 
 gcp-deploy: ## Deploy to Cloud Run
 	gcloud run deploy $(SERVICE) --image $(IMAGE) --region $(REGION) --memory=1Gi \
-		--allow-unauthenticated --port 8080
+		--allow-unauthenticated --port 8080 \
+		--set-secrets=OPENROUTER_API_KEY=openrouter-api-key:latest
 
 gcp-url: ## Print service URL
 	@gcloud run services describe $(SERVICE) --region $(REGION) --format='value(status.url)'
