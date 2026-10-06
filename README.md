@@ -42,8 +42,8 @@ pip3 install poetry
 ### 2. Clone and install
 
 ```bash
-git clone https://github.com/<your-user>/herbarium-processor.git
-cd herbarium-processor
+git clone https://github.com/<your-user>/parsely_studio.git
+cd parsely_studio
 poetry install
 cd src/herbarium_processor/web/frontend
 npm ci
