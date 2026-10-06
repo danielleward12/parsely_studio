@@ -62,7 +62,7 @@
           <div class="w-64 h-full overflow-y-auto border-l border-base-300 p-4">
             <h2>Digitized fields</h2>
             <p class="text-xs leading-snug text-base-content/60">
-              The id field is populated from the original image filename. Other
+              The imagename field is populated from the original image filename. Other
               fields were autocompleted by an AI model and may contain errors.
               Please review and correct them before finalizing.
             </p>
@@ -150,10 +150,10 @@ function setFormFrom(obj) {
     }
   }
   const imageInfo = currentSpecimen.value?.image_info;
-  form.id = imageInfo?.name || imageInfo?.id || "";
+  form.imagename = imageInfo?.name || imageInfo?.id || "";
   if (obj) {
     for (const [k, v] of Object.entries(obj)) {
-      if (k !== "id") form[k] = v;
+      if (k !== "id" && k !== "filename" && k !== "imagename") form[k] = v;
     }
   }
 }

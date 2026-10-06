@@ -56,7 +56,7 @@ router = APIRouter(prefix="/batches", tags=["batches"])
 BASE_UPLOAD_LIMIT = 10
 API_KEY_UPLOAD_LIMIT = 50
 CSV_FIELD_ORDER = [
-    "id",
+    "imagename",
     "catalogNumber",
     "datasetName",
     "scientificName",
@@ -321,6 +321,11 @@ async def get_csv(batch_id: str):
             try:
                 with user_json.open("r", encoding="utf-8") as f:
                     data = json.load(f)
+                # Older saved labels used "id" or "filename" for the image name.
+                if "imagename" not in data:
+                    data["imagename"] = data.get("filename", data.get("id", subdir.name))
+                data.pop("filename", None)
+                data.pop("id", None)
                 rows.append(data)
                 fieldnames.update(data.keys())
             except json.JSONDecodeError:

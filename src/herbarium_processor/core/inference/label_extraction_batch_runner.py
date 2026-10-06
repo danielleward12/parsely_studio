@@ -95,7 +95,7 @@ class LabelExtractionBatchRunner:
                 await self._acquire_rpm_token()
                 # LabelExtractor.classify is async now
                 res = await extractor.classify(target)
-                res["id"] = os.path.splitext(os.path.basename(target.img_path))[0]
+                res["imagename"] = os.path.splitext(os.path.basename(target.img_path))[0]
                 return res
 
         if not self.targets:
@@ -111,7 +111,7 @@ class LabelExtractionBatchRunner:
         for r in self.results:
             all_keys.update(r.keys())
 
-        ordered = ["id"]
+        ordered = ["imagename"]
         if self.prompt_builder is not None and getattr(
             self.prompt_builder, "field_list", None
         ):

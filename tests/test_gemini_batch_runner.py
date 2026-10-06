@@ -64,7 +64,7 @@ def test_run_extraction(monkeypatch, tmp_path):
     assert calls == [t1, t2]
     assert created_clients[0].api_key == "abc123"
     assert [r["value"] for r in runner.results] == [t1.img_path, t2.img_path]
-    assert [r["id"] for r in runner.results] == ["a", "b"]
+    assert [r["imagename"] for r in runner.results] == ["a", "b"]
 
 
 def test_make_extractor_receives_api_key(monkeypatch, tmp_path):
@@ -115,15 +115,15 @@ def test_save_csv(tmp_path):
     runner = LabelExtractionBatchRunner(
         output_csv_path=str(csv_path), prompt_builder=dummy_builder, targets=[]
     )
-    runner.results = [{"id": "1", "a": "x"}, {"id": "2", "b": "y"}]
+    runner.results = [{"imagename": "1", "a": "x"}, {"imagename": "2", "b": "y"}]
     runner.save_csv()
 
     with open(csv_path, newline="") as f:
         rows = list(csv.DictReader(f))
     assert len(rows) == 2
-    ids = {row["id"] for row in rows}
-    assert ids == {"1", "2"}
-    assert list(rows[0].keys()) == ["id", "a", "b"]
+    imagenames = {row["imagename"] for row in rows}
+    assert imagenames == {"1", "2"}
+    assert list(rows[0].keys()) == ["imagename", "a", "b"]
 
 
 def test_run_calls_all_methods(monkeypatch):

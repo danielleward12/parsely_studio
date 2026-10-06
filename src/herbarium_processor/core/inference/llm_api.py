@@ -84,7 +84,7 @@ class OpenRouterAPI(BaseOpenAIAPI):
 
     base_url = "https://openrouter.ai/api/v1"
     api_key_env_var = "OPENROUTER_API_KEY"
-    default_model_name = "google/gemini-2.5-pro"
+    default_model_name = "anthropic/claude-sonnet-4"
 
 
 class GoogleGeminiAPI(BaseOpenAIAPI):
@@ -92,4 +92,4 @@ class GoogleGeminiAPI(BaseOpenAIAPI):
 
     base_url = "https://generativelanguage.googleapis.com/v1beta/openai/"
     api_key_env_var = "GOOGLE_API_KEY"
-    default_model_name = "gemini-2.5-pro"
+    default_model_name = "anthropic/claude-sonnet-4"
