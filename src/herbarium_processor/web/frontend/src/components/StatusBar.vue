@@ -2,6 +2,7 @@
   <AppBar
     :sticky="true"
     :progress-percent="progressPercent"
+    badge-text="1.0.0"
   />
 </template>
 

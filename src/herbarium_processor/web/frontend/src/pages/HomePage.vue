@@ -320,7 +320,11 @@ const handleUpload = async () => {
     const batchId = data?.batch_id ?? data?.id ?? data?.uuid;
     if (!batchId) throw new Error("Batch ID missing in response.");
     if (skipCrop.value) {
-      queueAutoCropAndInfer(batchId);
+      // Populate the shared cache before the review page mounts. Otherwise the
+      // worker and page can race to fetch separate batch objects, and the page
+      // won't see the worker's inference updates.
+      const batch = await batchStore.getBatch(batchId);
+      queueAutoCropAndInfer(batchId, batch);
       router.replace({
         name: "labelWizard",
         params: { id: batchId },
@@ -348,11 +352,10 @@ const loadImageDimensions = (url) =>
     img.src = url;
   });
 
-const queueAutoCropAndInfer = (batchId) => {
+const queueAutoCropAndInfer = (batchId, batch) => {
   // Fire-and-forget background processing; errors are logged but do not block navigation
   (async () => {
     try {
-      const batch = await batchStore.getBatch(batchId);
       const specimens = batch?.specimens ?? [];
 
       await Promise.all(
