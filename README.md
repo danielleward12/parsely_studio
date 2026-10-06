@@ -85,7 +85,7 @@ poetry run pre-commit install
 
 ## Protocol for reporting the use of Parsely Studio
 
-"Parsely Studio (version 1.0.0) and its underlying technology (Google Gemini Pro 2.5 and Google Cloud Vision) was used to transcribe this specimen."
+Please report that "Parsely Studio (version 1.0.0) and its underlying technology (Google Gemini Pro 2.5 and Google Cloud Vision) was used to transcribe this specimen."
 
 ## 📜 License
 
