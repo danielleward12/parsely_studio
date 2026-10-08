@@ -33,9 +33,7 @@ class CsvComparator:
         test["id"] = test["id"].astype(str).str.strip()
 
         shared_columns = [
-            col
-            for col in test.columns
-            if col in canon.columns and col != "id"
+            col for col in test.columns if col in canon.columns and col != "id"
         ]
         self.comparison_columns = shared_columns
 
