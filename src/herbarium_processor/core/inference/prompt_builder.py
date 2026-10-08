@@ -67,6 +67,7 @@ class PromptBuilder:
         self.template_path = ROOT_DIR / template_path
 
         self.df = pd.read_csv(self.csv_path, dtype={"id": str})
+        self.id_column = "imagename" if "imagename" in self.df.columns else "id"
         template_dir, template_file = os.path.split(self.template_path)
         self.env = Environment(loader=FileSystemLoader(template_dir))
         self.template = self.env.get_template(template_file)
@@ -76,7 +77,8 @@ class PromptBuilder:
             return json.load(f)
 
     def _load_output_json(self, id_: str) -> Dict:
-        row = self.df[self.df["id"] == id_].iloc[0].to_dict()
+        matching_rows = self.df[self.df[self.id_column].astype(str) == str(id_)]
+        row = matching_rows.iloc[0].to_dict()
         output = {}
         for key in self.field_list:
             if key == "sources":

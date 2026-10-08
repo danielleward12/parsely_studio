@@ -19,14 +19,23 @@ class CsvComparator:
         canon.columns = canon.columns.str.strip().str.lower()
         test.columns = test.columns.str.strip().str.lower()
 
-        if "id" not in canon.columns or "id" not in test.columns:
-            raise ValueError("Both CSV files must include an 'id' column.")
+        canon_id_column = "imagename" if "imagename" in canon.columns else "id"
+        test_id_column = "imagename" if "imagename" in test.columns else "id"
+        if canon_id_column not in canon.columns or test_id_column not in test.columns:
+            raise ValueError(
+                "Both CSV files must include an 'id' or 'imagename' column."
+            )
+
+        canon = canon.rename(columns={canon_id_column: "id"})
+        test = test.rename(columns={test_id_column: "id"})
 
         canon["id"] = canon["id"].astype(str).str.strip()
         test["id"] = test["id"].astype(str).str.strip()
 
         shared_columns = [
-            col for col in test.columns if col in canon.columns and col != "id"
+            col
+            for col in test.columns
+            if col in canon.columns and col != "id"
         ]
         self.comparison_columns = shared_columns
 

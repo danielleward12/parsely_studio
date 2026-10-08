@@ -200,26 +200,13 @@
           models. What’s clear is that <span class="font-bold">Parsely needs a durable home and
             champions who share the vision of keeping it free and accessible</span>,
           while scaling to global impact. If you see a way to help shape that
-          future, we’d love to talk.
+          future, reach out at
+          <a
+            href="mailto:danielleward@berkeley.edu"
+            class="font-medium text-primary underline underline-offset-4 hover:text-primary/80"
+          >danielleward@berkeley.edu</a>.
         </p>
       </section>
-    </section>
-    <section class="mx-auto px-4 py-12 bg-base-200 text-center">
-      <div class="p-8 max-w-4xl mx-auto">
-        <h2 class="text-2xl sm:text-3xl font-bold mb-4">
-          Get in Touch
-        </h2>
-        <p class="text-base sm:text-lg text-base-content/80 mb-6">
-          Interested in piloting Parsely, supporting its future, or just
-          learning more? We’d love to hear from you.
-        </p>
-        <a
-          href="mailto:hello@parselystudio.com"
-          class="btn btn-primary text-lg p-6"
-        >
-          Email us at hello@parselystudio.com
-        </a>
-      </div>
     </section>
   </section>
 </template>
