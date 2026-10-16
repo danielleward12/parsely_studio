@@ -45,6 +45,39 @@
         @change="onFileSelect"
       >
 
+      <div class="mt-4">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline"
+          :aria-expanded="showModeOptions"
+          @click="showModeOptions = !showModeOptions"
+        >
+          {{ modeToggleLabel }}
+          <span aria-hidden="true">{{ showModeOptions ? '▴' : '▾' }}</span>
+        </button>
+
+        <div v-if="showModeOptions" class="mt-2 flex gap-2">
+          <button
+            type="button"
+            :class="['btn btn-sm', batchStore.selectedModel === 'gemini' ? 'btn-neutral' : 'btn-outline']"
+            @click="selectModel('gemini')"
+          >
+            Default mode
+          </button>
+          <button
+            type="button"
+            :class="['btn btn-sm border-success bg-success/10 text-base-content hover:bg-success/20', batchStore.selectedModel === 'qwen' ? 'ring-1 ring-success' : '']"
+            @click="selectModel('qwen')"
+          >
+            Eco mode
+          </button>
+        </div>
+
+        <p v-if="showModeOptions" class="mt-2 max-w-md text-xs leading-relaxed text-base-content/70">
+          {{ selectedModeDescription }}
+        </p>
+      </div>
+
       <!-- Thumbnails -->
       <div
         v-if="uploads.length"
@@ -175,9 +208,27 @@ const isUploading = ref(false);
 const isDragging = ref(false);
 const skipCrop = ref(false);
 const apiKey = ref("");
+const showModeOptions = ref(false);
+const hasSelectedMode = ref(false);
 const batchStore = useBatchStore();
 
 const trimmedApiKey = computed(() => apiKey.value.trim());
+const selectedModeLabel = computed(() =>
+  batchStore.selectedModel === "qwen" ? "Eco mode" : "Default mode"
+);
+const modeToggleLabel = computed(() =>
+  !showModeOptions.value && hasSelectedMode.value ? selectedModeLabel.value : "Mode"
+);
+const selectedModeDescription = computed(() =>
+  batchStore.selectedModel === "qwen"
+    ? "Powered by Qwen3.8 27B. Uses an open-weight model to reduce environmental impact and keep your data more private."
+    : "Powered by Gemini 2.5 Pro. Provides the highest historical accuracy for transcribing complex, handwritten herbarium labels."
+);
+
+const selectModel = (model) => {
+  batchStore.selectedModel = model;
+  hasSelectedMode.value = true;
+};
 const maxUploadCount = computed(() => (trimmedApiKey.value ? 50 : 5));
 const validatingKey = ref(false);
 const isKeyValid = ref(null); // true / false / null

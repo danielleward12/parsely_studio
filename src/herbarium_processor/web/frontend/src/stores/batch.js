@@ -8,6 +8,7 @@ import { defineStore } from "pinia";
  * @property {number} width
  * @property {number} height
  * @property {number} rotate
+ * @property {string} model
  */
 
 // Data from the backend API
@@ -42,6 +43,7 @@ export const useBatchStore = defineStore("batches", {
     /** @type {Record<string, Batch>} */
     batches: {},
     processingErrors: {},
+    selectedModel: "gemini",
   }),
   actions: {
     // Convenience: get specimens array for a batch (always an array)
@@ -176,7 +178,10 @@ export const useBatchStore = defineStore("batches", {
         const res = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(cropOp),
+          body: JSON.stringify({
+            ...cropOp,
+            model: this.selectedModel,
+          }),
         });
         if (!res.ok) {
           let message = `Crop/infer failed: ${res.status}`;
@@ -189,7 +194,6 @@ export const useBatchStore = defineStore("batches", {
           throw new Error(message);
         }
 
-        // Backend may return JSON object with updated fields; guard empty body
         try {
           updated = await res.json();
         } catch {
@@ -228,7 +232,6 @@ export const useBatchStore = defineStore("batches", {
         });
         if (!res.ok) throw new Error(`Crop/infer failed: ${res.status}`);
 
-        // Backend may return JSON object with updated fields; guard empty body
         try {
           updated = await res.json();
         } catch {

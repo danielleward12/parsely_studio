@@ -44,6 +44,7 @@
             Click and drag the borders of the cropping tool so that it only captures the specimen label. Do not include
             barcodes, color palettes, rulers, and the specimens themselves.
           </p>
+
         </aside>
       </div>
     </main>
