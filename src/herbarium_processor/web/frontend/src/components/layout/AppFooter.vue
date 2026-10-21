@@ -56,6 +56,12 @@
           </li>
           <li>
             <a
+              href="/environmental-impact"
+              class="hover:text-white"
+            >Environmental impact</a>
+          </li>
+          <li>
+            <a
               href="/about"
               class="hover:text-white"
             >Our mission</a>

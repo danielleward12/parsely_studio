@@ -1,6 +1,11 @@
 // src/stores/batch.js
 import { defineStore } from "pinia";
 
+// This is a last-resort UI guard. Backend provider calls have their own
+// shorter deadlines; this prevents the crop screen from spinning forever if
+// anything else in the request path becomes stuck.
+const INFERENCE_TIMEOUT_MS = 3 * 60 * 1000;
+
 /**
  * @typedef {Object} CropOperation
  * @property {number} x
@@ -174,10 +179,16 @@ export const useBatchStore = defineStore("batches", {
       delete this.processingErrors[processingKey];
 
       let updated = null;
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(
+        () => controller.abort(),
+        INFERENCE_TIMEOUT_MS
+      );
       try {
         const res = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
           body: JSON.stringify({
             ...cropOp,
             model: this.selectedModel,
@@ -209,10 +220,14 @@ export const useBatchStore = defineStore("batches", {
             "Processing finished without parsed fields. Please try again.";
         }
       } catch (err) {
-        this.processingErrors[processingKey] =
-          err?.message || "Image processing failed. Please try again.";
-        throw err;
+        const message =
+          err?.name === "AbortError"
+            ? "Saving and extracting took longer than 3 minutes. Please try again."
+            : err?.message || "Image processing failed. Please try again.";
+        this.processingErrors[processingKey] = message;
+        throw new Error(message);
       } finally {
+        window.clearTimeout(timeoutId);
         // Clear waiting flag regardless of success/failure
         this._mergeSpecimenRecord(batchId, imageId, { waiting_on_llm: false });
       }

@@ -13,6 +13,14 @@
         <li>
           <RouterLink
             class="rounded-btn"
+            to="/environmental-impact"
+          >
+            Environmental impact
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink
+            class="rounded-btn"
             to="/about"
           >
             Our mission

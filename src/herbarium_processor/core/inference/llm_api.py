@@ -42,6 +42,11 @@ class BaseOpenAIAPI(BaseLLMAPI):
         self.client = AsyncOpenAI(
             base_url=self.base_url,
             api_key=api_key,
+            # A provider request must not hold the crop screen indefinitely.
+            # One retry handles short-lived network/provider failures while
+            # keeping the total wait bounded for an interactive request.
+            timeout=90.0,
+            max_retries=1,
         )
 
     def _prepare_user_content(self, contents: List[Union[str, dict]]):
@@ -97,7 +102,7 @@ class GoogleGeminiAPI(BaseOpenAIAPI):
 
 
 class OpenRouterQwen27BAPI(OpenRouterAPI):
-    """Open-weight Qwen3.8 27B via OpenRouter."""
+    """Open-weight Qwen 3.8 27B via OpenRouter."""
     base_url = "https://openrouter.ai/api/v1"
     api_key_env_var = "OPENROUTER_API_KEY"
     default_model_name = "qwen/qwen3.8-27b"

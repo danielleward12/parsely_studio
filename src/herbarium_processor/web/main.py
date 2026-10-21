@@ -51,7 +51,12 @@ if FRONTEND_DIST.exists():
         # Don’t hijack API/tmp paths
         if full_path.startswith(("api/", "tmp/")):
             return PlainTextResponse("Not Found", status_code=404)
-        return FileResponse(INDEX_HTML)
+        # Always revalidate the app shell so a new deployment is picked up on
+        # the next navigation; Vite's fingerprinted assets remain cache-safe.
+        return FileResponse(
+            INDEX_HTML,
+            headers={"Cache-Control": "no-cache, must-revalidate"},
+        )
 
 else:
 
