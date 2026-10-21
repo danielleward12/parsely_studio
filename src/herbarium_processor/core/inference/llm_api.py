@@ -100,9 +100,9 @@ class GoogleGeminiAPI(BaseOpenAIAPI):
     default_model_name = "gemini-2.5-pro"
 
 
-
 class OpenRouterQwen27BAPI(OpenRouterAPI):
     """Open-weight Qwen 3.8 27B via OpenRouter."""
+
     base_url = "https://openrouter.ai/api/v1"
     api_key_env_var = "OPENROUTER_API_KEY"
     default_model_name = "qwen/qwen3.8-27b"
