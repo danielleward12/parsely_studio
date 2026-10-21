@@ -20,7 +20,11 @@ from herbarium_processor.core.inference import create_prompt_builder_from_yaml
 from herbarium_processor.core.inference.label_extraction_batch_runner import (
     LabelExtractionBatchRunner,
 )
-from herbarium_processor.core.inference.llm_api import GoogleGeminiAPI, OpenRouterAPI
+from herbarium_processor.core.inference.llm_api import (
+    GoogleGeminiAPI,
+    OpenRouterAPI,
+    OpenRouterQwen27BAPI,
+)
 from herbarium_processor.core.ocr.ocr_client import OcrClient
 from herbarium_processor.core.types.specimen_label import SpecimenLabel
 
@@ -31,6 +35,7 @@ class CropOperation(BaseModel):
     width: float = 0.0
     height: float = 0.0
     rotate: float = 0.0
+    model: str = "gemini"
 
 
 class ImageInfo(BaseModel):
@@ -241,6 +246,16 @@ async def crop_and_infer(batch_id: str, image_id: str, ops: CropOperation):
     # Run batch runner
     builder = create_prompt_builder_from_yaml("prompts/configs/default_prompt.yaml")
     csv_rel = image_dir / "result.csv"
+
+    # Determine which API class to use based on the 'model' field in CropOperation
+    # and whether an API key was provided.
+    if ops.model == "qwen":
+        llm_api_cls = OpenRouterQwen27BAPI
+    elif api_key_value:
+        llm_api_cls = GoogleGeminiAPI
+    else:
+        llm_api_cls = OpenRouterAPI
+
     runner = LabelExtractionBatchRunner(
         output_csv_path=str(csv_rel),
         output_dir=str(image_dir),
@@ -250,7 +265,7 @@ async def crop_and_infer(batch_id: str, image_id: str, ops: CropOperation):
         max_inflight=60,  # tune for cost/throughput
         rpm_limit=140,
         llm_api_key=api_key_value,
-        llm_api_cls=GoogleGeminiAPI if api_key_value else OpenRouterAPI,
+        llm_api_cls=llm_api_cls,
     )
     await runner.run_async()
 

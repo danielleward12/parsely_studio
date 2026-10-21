@@ -44,6 +44,7 @@
             Click and drag the borders of the cropping tool so that it only captures the specimen label. Do not include
             barcodes, color palettes, rulers, and the specimens themselves.
           </p>
+
         </aside>
       </div>
     </main>
@@ -161,14 +162,16 @@ async function handleUpload() {
     const cropOp = await cropperRef.getCropOperation();
     if (!cropOp) throw new Error("No crop operation");
 
-    const inference = batchStore.cropAndInfer(props.id, specimen.id, cropOp);
+    const inference = batchStore.queueCropAndInfer(
+      props.id,
+      specimen.id,
+      cropOp
+    );
+    inference.catch((err) => console.error("crop_and_infer error", err));
     if (currentIndex.value < specimens.value.length - 1) {
-      // Keep earlier crop steps sequential, then let the final inference finish
-      // while the review page is already open.
-      await inference;
+      // Extraction continues in the background; queued jobs run serially.
       currentIndex.value++;
     } else {
-      inference.catch((err) => console.error("crop_and_infer error", err));
       router.push({ name: "labelWizard", params: { id: props.id } });
     }
   } catch (err) {

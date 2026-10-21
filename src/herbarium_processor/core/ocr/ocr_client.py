@@ -45,7 +45,9 @@ class OcrClient:
         image = vision.Image(content=content)
 
         # Perform OCR
-        response = self.client.document_text_detection(image=image)
+        # Bound an unavailable Vision API rather than leaving the interactive
+        # crop-and-extract request open indefinitely.
+        response = self.client.document_text_detection(image=image, timeout=90.0)
 
         if response.error.message:
             raise Exception(f"Google OCR API error: {response.error.message}")

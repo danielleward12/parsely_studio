@@ -67,7 +67,7 @@
               Please review and correct them before finalizing.
             </p>
             <div
-              v-for="(val, key) in form"
+              v-for="key in orderedFieldKeys"
               :key="key"
               class="form-control mb-3"
             >
@@ -139,18 +139,47 @@ const processingError = computed(() => {
     ? batchStore.processingErrors[`${props.id}:${imageId}`]
     : null;
 });
-const form = reactive({
-  ...(currentSpecimen.value?.image_info?.llm_output || {}),
-});
+
+// Keep review fields in the same order as the exported CSV. Models can omit
+// fields or return JSON keys in a different order for each specimen.
+const FIELD_ORDER = [
+  "imagename",
+  "catalogNumber",
+  "datasetName",
+  "scientificName",
+  "locality",
+  "municipality",
+  "county",
+  "stateProvince",
+  "country",
+  "verbatimLatitude",
+  "verbatimLongitude",
+  "verbatimElevation",
+  "habitat",
+  "verbatimEventDate",
+  "eventDate",
+  "recordedBy",
+  "recordNumber",
+  "identifiedBy",
+  "dateIdentified",
+  "otherCatalogNumbers",
+  "associatedTaxa",
+  "comment",
+];
+
+const form = reactive({});
+const orderedFieldKeys = computed(() => [
+  ...FIELD_ORDER,
+  ...Object.keys(form)
+    .filter((key) => !FIELD_ORDER.includes(key))
+    .sort(),
+]);
 
 function setFormFrom(obj) {
-  for (const k of Object.keys(form)) {
-    if (!(obj && Object.prototype.hasOwnProperty.call(obj, k))) {
-      delete form[k];
-    }
-  }
+  for (const k of Object.keys(form)) delete form[k];
   const imageInfo = currentSpecimen.value?.image_info;
   form.imagename = imageInfo?.name || imageInfo?.id || "";
+  for (const field of FIELD_ORDER.slice(1)) form[field] = "";
   if (obj) {
     for (const [k, v] of Object.entries(obj)) {
       if (k !== "id" && k !== "filename" && k !== "imagename") form[k] = v;
