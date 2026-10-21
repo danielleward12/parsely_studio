@@ -48,6 +48,7 @@ export const useBatchStore = defineStore("batches", {
     /** @type {Record<string, Batch>} */
     batches: {},
     processingErrors: {},
+    inferenceQueues: {},
     selectedModel: "gemini",
   }),
   actions: {
@@ -233,6 +234,32 @@ export const useBatchStore = defineStore("batches", {
       }
 
       return updated;
+    },
+
+    /**
+     * Queue crop/extract work so the crop wizard can advance immediately while
+     * keeping OCR and model requests serial within a batch.
+     */
+    queueCropAndInfer(batchId, imageId, cropOp) {
+      const processingKey = `${batchId}:${imageId}`;
+      this._mergeSpecimenRecord(batchId, imageId, { waiting_on_llm: true });
+      delete this.processingErrors[processingKey];
+
+      const previous = this.inferenceQueues[batchId] || Promise.resolve();
+      const queued = previous
+        .catch(() => undefined)
+        .then(() => this.cropAndInfer(batchId, imageId, cropOp));
+      this.inferenceQueues[batchId] = queued;
+
+      void queued
+        .finally(() => {
+          if (this.inferenceQueues[batchId] === queued) {
+            delete this.inferenceQueues[batchId];
+          }
+        })
+        .catch(() => undefined);
+
+      return queued;
     },
 
     async postUserUpdatedLlmLabels(batchId, imageId, labels) {

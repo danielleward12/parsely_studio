@@ -24,7 +24,8 @@
           handwritten herbarium labels. The <strong class="font-bold text-emerald-700">Eco mode</strong> uses Qwen 3.8 27B,
           a smaller open-weight model. It generally requires less computing power per request and prioritizes
           transparency compared to closed frontier models like Gemini, Claude, and ChatGPT. Its openness makes its
-          energy use more directly measurable and its environmental claims easier to examine.
+          energy use more directly measurable and its environmental claims easier to examine. However, it tends to
+          result in lower accuracy than the Default mode.
         </p>
       </div>
 

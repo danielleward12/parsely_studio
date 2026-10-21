@@ -221,7 +221,7 @@ const batchStore = useBatchStore();
 const trimmedApiKey = computed(() => apiKey.value.trim());
 const selectedModeDescription = computed(() =>
   batchStore.selectedModel === "qwen"
-    ? "Powered by Qwen 3.8 27B, an open-weight model. It has a lower environmental impact and is a more transparent option."
+    ? "Powered by Qwen 3.8 27B, an open-weight model. It has a lower environmental impact and is a more transparent option, with a trade-off in accuracy."
     : "Powered by Gemini 2.5 Pro. Provides the highest historical accuracy for transcribing complex, handwritten herbarium labels."
 );
 
